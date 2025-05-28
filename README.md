@@ -1,112 +1,267 @@
-# Subscription Tracking System
+# Subscription-Tracker-Backend 🚀
 
-This is a Node.js application for tracking subscriptions, built with Express.js and MongoDB.
+[![npm version](https://img.shields.io/npm/v/subscriptiontracking-system?color=brightgreen&label=npm)](https://www.npmjs.com/package/subscriptiontracking-system)  
+[![License](https://img.shields.io/github/license/tanbiralam/Subscription-Tracker-Backend?color=blue)](https://github.com/tanbiralam/Subscription-Tracker-Backend/blob/main/LICENSE)  
+[![Build Status](https://img.shields.io/github/actions/workflow/status/tanbiralam/Subscription-Tracker-Backend/nodejs.yml?branch=main&label=build&color=green)](https://github.com/tanbiralam/Subscription-Tracker-Backend/actions)  
 
-## Features
+---
 
-- User authentication (signup, login)
-- Manage subscriptions (create, view, update, delete)
-- Workflow management (potentially using Upstash Workflow)
-- Security features including Arcjet middleware.
+Subscription-Tracker-Backend is a robust Node.js API-first backend application designed to help you efficiently manage and track your recurring subscriptions. Built with Express.js and MongoDB, it features secure JWT authentication via Arcjet middleware and optional workflow automation powered by Upstash Workflow.
 
-## Prerequisites
+---
 
-- Node.js (refer to `package.json` for version specifics if any)
-- MongoDB
+## ✨ Features
 
-## Getting Started
+- **User Authentication:** Secure sign up, login, and JWT-based session management.
+- **Subscription CRUD:** Create, read, update, and delete subscription records with metadata including billing cycle and cost.
+- **Workflow Automation:** Integrate with Upstash Workflow for custom subscription-related automations.
+- **Security Middleware:** Enhanced request inspection and security with Arcjet middleware.
+- **Email Notifications:** Send subscription reminders and alerts using Nodemailer.
+- **Date Handling:** Subscription billing and expiry calculations with Day.js.
+- **Express.js API:** Clean RESTful endpoints with pagination, filtering, and validation.
+- **Error Handling:** Centralized and consistent error management.
+- **Development Tools:** Hot reload with Nodemon and code linting with ESLint.
 
-1.  **Clone the repository:**
+---
 
-    ```bash
-    git clone <repository-url>
-    cd subscriptiontracking-system
-    ```
+## 📋 Prerequisites
 
-2.  **Install dependencies:**
+- **Node.js** v16 or higher (LTS recommended)
+- **MongoDB** 5.x or higher (local installation or Atlas cloud)
+- **npm** v8 or higher
 
-    ```bash
-    npm install
-    ```
+---
 
-3.  **Set up environment variables:**
-    Create a `.env` file in the root directory and add the necessary environment variables (e.g., `PORT`, `MONGODB_URI`, `JWT_SECRET`). Refer to `config/env.js` (if it exists) or the codebase for required variables.
+## 🚀 Installation
 
-4.  **Start the development server:**
+1. **Clone the repository**
 
-    ```bash
-    npm run dev
-    ```
+```bash
+git clone https://github.com/tanbiralam/Subscription-Tracker-Backend.git
+cd Subscription-Tracker-Backend
+2. **Install dependencies**
 
-    This will start the server using `nodemon`, which will automatically restart the server on file changes.
+```bash
+npm install
+3. **Set up environment variables**
 
-5.  **Start the production server:**
-    ```bash
-    npm start
-    ```
+```bash
+cp .env.example .env
+Edit `.env` to add your MongoDB connection URI, JWT secret, email credentials, and Upstash workflow keys.
 
-## API Endpoints
+---
 
-The application exposes the following API endpoints:
+## 💻 Usage
 
-- `/api/v1/auth`: Authentication related endpoints (e.g., login, signup)
-- `/api/v1/users`: User management endpoints
-- `/api/v1/subscriptions`: Subscription management endpoints
-- `/api/v1/workflows`: Workflow management endpoints
+### 1. Start development server with hot reload
 
-The root endpoint `/` will return a welcome message.
+```bash
+npm run dev
+Runs the server with `nodemon` watching for file changes.
 
-## Scripts
+---
 
-- `npm start`: Starts the application in production mode.
-- `npm run dev`: Starts the application in development mode using `nodemon`.
+### 2. Start production server
 
-## Dependencies
+```bash
+npm start
+Runs the server using Node.js without reload.
 
-Key dependencies include:
+---
 
-- `express`: Web framework
-- `mongoose`: MongoDB object modeling
-- `jsonwebtoken`: For generating JWTs for authentication
-- `bcryptjs`: For hashing passwords
-- `cookie-parser`: Middleware for parsing cookies
-- `dotenv`: For loading environment variables
-- `@arcjet/node`: Security middleware
-- `@upstash/workflow`: (Likely for managing workflows)
-- `nodemailer`: For sending emails (if implemented)
-- `dayjs`: For date manipulation
+### 3. API Usage Examples
 
-Refer to the `package.json` file for a full list of dependencies.
+All examples use TypeScript with `axios` for HTTP requests. Replace `http://localhost:3000` with your deployed or local server URL.
 
-## Development Dependencies
+---
 
-- `nodemon`: For automatically restarting the server during development.
-- `eslint`: For code linting.
+#### Example 1: User Signup and Login
 
-Refer to the `package.json` file for a full list of development dependencies.
+```typescript
+import axios from 'axios';
 
-## Project Structure (Simplified)
+interface SignupResponse {
+  token: string;
+  userId: string;
+}
 
-```
-.
-├── config/         # Environment variables and configuration
-├── controllers/    # Request handlers
-├── database/       # Database connection logic (mongodb.js)
-├── middlewares/    # Custom middleware (e.g., error handling, Arcjet)
-├── models/         # Mongoose schemas
-├── routes/         # API route definitions
-├── utils/          # Utility functions
-├── app.js          # Main application entry point
-├── package.json    # Project metadata and dependencies
-└── README.md       # This file
-```
+async function signupUser() {
+  try {
+    const response = await axios.post<SignupResponse>('http://localhost:3000/api/v1/auth/signup', {
+      username: 'johndoe',
+      email: 'johndoe@example.com',
+      password: 'StrongP@ssw0rd!',
+    });
 
-## Contributing
+    console.log('Signup successful. JWT Token:', response.data.token);
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Signup failed:', error.response?.data.message || error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+signupUser();
+---
 
-Please make sure to update tests as appropriate.
+#### Example 2: Create a Subscription (Authenticated)
 
-## License
+```typescript
+import axios from 'axios';
 
-(Specify your license here, e.g., MIT)
+interface Subscription {
+  _id: string;
+  name: string;
+  billingCycle: string;
+  cost: number;
+  userId: string;
+  nextBillingDate: string;
+}
+
+async function createSubscription(token: string) {
+  try {
+    const newSubscription = {
+      name: 'Netflix',
+      billingCycle: 'monthly',
+      cost: 12.99,
+      nextBillingDate: '2025-07-01T00:00:00.000Z',
+    };
+
+    const response = await axios.post<Subscription>(
+      'http://localhost:3000/api/v1/subscriptions',
+      newSubscription,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    console.log('Subscription created:', response.data);
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Failed to create subscription:', error.response?.data.message || error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
+
+// Example usage: assume you have a valid JWT token string
+// createSubscription('your-jwt-token-here');
+---
+
+#### Example 3: Fetch User Subscriptions with Pagination and Error Handling
+
+```typescript
+import axios from 'axios';
+
+interface Subscription {
+  _id: string;
+  name: string;
+  billingCycle: string;
+  cost: number;
+  nextBillingDate: string;
+}
+
+interface SubscriptionsResponse {
+  subscriptions: Subscription[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+async function getSubscriptions(token: string, page = 1, limit = 10) {
+  try {
+    const response = await axios.get<SubscriptionsResponse>(
+      `http://localhost:3000/api/v1/subscriptions?page=${page}&limit=${limit}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    console.log(`Page ${response.data.page} of subscriptions:`, response.data.subscriptions);
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        console.warn('Rate limit exceeded. Retrying after delay...');
+        await new Promise(res => setTimeout(res, 2000));
+        return getSubscriptions(token, page, limit);
+      }
+      console.error('Failed to fetch subscriptions:', error.response?.data.message || error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
+
+// Example usage: getSubscriptions('your-jwt-token-here');
+---
+
+## ⚙️ Configuration
+
+The application uses environment variables to configure its behavior. Below is a comprehensive list of supported variables with descriptions:
+
+| Variable          | Description                                  | Example                              | Notes                                      |
+|-------------------|----------------------------------------------|------------------------------------|--------------------------------------------|
+| `PORT`            | Port number for the Express server           | `3000`                             | Default is 3000 if not specified            |
+| `MONGODB_URI`     | MongoDB connection string                     | `mongodb+srv://user:pass@cluster0.mongodb.net/subscriptions?retryWrites=true&w=majority` | Must be a valid MongoDB URI                  |
+| `JWT_SECRET`      | Secret key used to sign JWT tokens            | `supersecret_jwt_key`              | Keep this key secure and private            |
+| `EMAIL_HOST`      | SMTP host for sending emails                   | `smtp.gmail.com`                   | Used by Nodemailer                           |
+| `EMAIL_PORT`      | SMTP port                                      | `587`                             | Usually 587 for TLS                          |
+| `EMAIL_USER`      | SMTP username                                  | `your-email@gmail.com`             | For authentication                           |
+| `EMAIL_PASS`      | SMTP password                                  | `email_password`                   | Keep this secret                             |
+| `UPSTASH_WORKFLOW_TOKEN` | API token for Upstash Workflow integration | `your_upstash_workflow_token`     | Required only if workflow automation is used |
+
+Refer to `.env.example` for a sample template.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/your-feature`).
+3. Commit your changes with clear messages.
+4. Push your branch (`git push origin feature/your-feature`).
+5. Open a Pull Request describing your changes.
+
+Please ensure your code follows existing style conventions and includes appropriate tests if applicable.
+
+For major features or breaking changes, open an issue first to discuss the design.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](https://github.com/tanbiralam/Subscription-Tracker-Backend/blob/main/LICENSE).
+
+---
+
+# .env.example
+
+```env
+# Server configuration
+PORT=3000
+
+# MongoDB connection string
+# Replace <username>, <password>, and <cluster-url> with your MongoDB Atlas or local credentials
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/subscriptionDB?retryWrites=true&w=majority
+
+# JWT secret key for signing tokens
+# Use a strong, unpredictable string. Keep this secret and do not commit to source control.
+JWT_SECRET=your_jwt_secret_key_here
+
+# Email SMTP configuration for sending subscription notifications
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-email-password
+
+# Upstash Workflow API token (optional)
+# Get your token from https://console.upstash.com/workflows
+UPSTASH_WORKFLOW_TOKEN=your_upstash_workflow_token_here
+---
+
+Thank you for choosing **Subscription-Tracker-Backend**! For questions

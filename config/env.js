@@ -17,4 +17,5 @@ export const {
   QSTASH_NEXT_SIGNING_KEY,
   EMAIL_PASSWORD,
   CLIENT_URL,
+  DISABLE_QSTASH,
 } = process.env;

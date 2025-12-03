@@ -1,4 +1,4 @@
-import { SERVER_URL } from "../config/env.js";
+import { DISABLE_QSTASH, SERVER_URL } from "../config/env.js";
 import { workflowClient } from "../config/upstash.js";
 import Subscription from "../models/subscription.model.js";
 
@@ -9,16 +9,21 @@ export const createSubscription = async (req, res, next) => {
       user: req.user._id,
     });
 
-    const { workflowRunId } = await workflowClient.trigger({
-      url: `${SERVER_URL}/api/v1/workflows/send-reminders`,
-      body: {
-        subscriptionId: subcription._id,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-      retries: 0,
-    });
+    let workflowRunId = null;
+
+    if (DISABLE_QSTASH !== "true") {
+      const { workflowRunId: triggeredId } = await workflowClient.trigger({
+        url: `${SERVER_URL}/api/v1/workflows/send-reminders`,
+        body: {
+          subscriptionId: subcription._id,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        retries: 0,
+      });
+      workflowRunId = triggeredId;
+    }
 
     res.status(201).json({
       success: true,

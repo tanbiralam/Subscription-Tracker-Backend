@@ -21,14 +21,14 @@ const SubscriptionList = ({
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <p>Loading subscriptions...</p>
+        <p style={{ color: 'var(--text-secondary)', marginTop: '16px' }}>Loading subscriptions...</p>
       </div>
     );
   }
 
   return (
     <div className="subscription-list-container">
-      <div className="filters">
+      <div className="filters-container">
         <input
           type="text"
           placeholder="Search subscriptions..."
@@ -51,8 +51,9 @@ const SubscriptionList = ({
 
       {subscriptions.length === 0 ? (
         <div className="empty-state">
-          <h3>No subscriptions found</h3>
-          <p>Start by adding your first subscription</p>
+          <div className="empty-state-icon">📦</div>
+          <h3>No subscriptions yet</h3>
+          <p>Start by adding your first subscription to get started</p>
         </div>
       ) : (
         <>
@@ -73,9 +74,9 @@ const SubscriptionList = ({
               <button
                 onClick={() => onPageChange(page - 1)}
                 disabled={page === 1}
-                className="btn btn-secondary"
+                className="btn btn-secondary btn-sm"
               >
-                Previous
+                ← Previous
               </button>
               <span className="page-info">
                 Page {page} of {totalPages}
@@ -83,9 +84,9 @@ const SubscriptionList = ({
               <button
                 onClick={() => onPageChange(page + 1)}
                 disabled={page === totalPages}
-                className="btn btn-secondary"
+                className="btn btn-secondary btn-sm"
               >
-                Next
+                Next →
               </button>
             </div>
           )}

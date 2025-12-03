@@ -38,13 +38,13 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Welcome Back</h2>
-        <p className="auth-subtitle">Sign in to manage your subscriptions</p>
+        <p className="auth-subtitle">Sign in to your account to manage your subscriptions</p>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email Address</label>
             <input
               type="email"
               id="email"
@@ -53,6 +53,7 @@ const Login = () => {
               onChange={handleChange}
               required
               placeholder="Enter your email"
+              autoComplete="email"
             />
           </div>
 
@@ -67,6 +68,7 @@ const Login = () => {
               required
               minLength={6}
               placeholder="Enter your password"
+              autoComplete="current-password"
             />
           </div>
 
@@ -76,7 +78,7 @@ const Login = () => {
         </form>
 
         <p className="auth-footer">
-          Don't have an account? <Link to="/signup">Sign up</Link>
+          Don't have an account? <Link to="/signup">Create one</Link>
         </p>
       </div>
     </div>

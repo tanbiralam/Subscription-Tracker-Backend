@@ -62,8 +62,8 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
       <div className="form-container">
         <div className="form-header">
           <h2>{subscription ? 'Edit Subscription' : 'Add New Subscription'}</h2>
-          <button onClick={onCancel} className="close-btn">
-            &times;
+          <button onClick={onCancel} className="close-btn" type="button">
+            ×
           </button>
         </div>
 
@@ -72,7 +72,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="name">Subscription Name *</label>
+              <label htmlFor="name">Subscription Name</label>
               <input
                 type="text"
                 id="name"
@@ -82,12 +82,12 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
                 required
                 minLength={2}
                 maxLength={100}
-                placeholder="e.g., Netflix, Spotify"
+                placeholder="e.g., Netflix"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="category">Category *</label>
+              <label htmlFor="category">Category</label>
               <select
                 id="category"
                 name="category"
@@ -109,7 +109,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="price">Price *</label>
+              <label htmlFor="price">Price</label>
               <input
                 type="number"
                 id="price"
@@ -124,7 +124,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="currency">Currency *</label>
+              <label htmlFor="currency">Currency</label>
               <select
                 id="currency"
                 name="currency"
@@ -139,7 +139,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="frequency">Billing Cycle *</label>
+              <label htmlFor="frequency">Billing Cycle</label>
               <select
                 id="frequency"
                 name="frequency"
@@ -156,7 +156,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="paymentMethod">Payment Method *</label>
+            <label htmlFor="paymentMethod">Payment Method</label>
             <input
               type="text"
               id="paymentMethod"
@@ -170,7 +170,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="startDate">Start Date *</label>
+              <label htmlFor="startDate">Start Date</label>
               <input
                 type="date"
                 id="startDate"
@@ -196,7 +196,7 @@ const SubscriptionForm = ({ subscription, onSubmit, onCancel }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="status">Status *</label>
+            <label htmlFor="status">Status</label>
             <select
               id="status"
               name="status"

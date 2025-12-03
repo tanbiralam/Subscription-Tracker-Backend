@@ -88,19 +88,21 @@ const Dashboard = () => {
 
       <div className="dashboard-content">
         <div className="dashboard-header">
-          <div>
-            <h1>My Subscriptions</h1>
-            <p className="subtitle">Manage and track all your recurring subscriptions</p>
+          <div className="dashboard-header-title">
+            <h1>Subscriptions</h1>
+            <p className="dashboard-header-subtitle">Manage and track all your recurring payments</p>
           </div>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              setEditingSubscription(null);
-              setShowForm(true);
-            }}
-          >
-            + Add Subscription
-          </button>
+          <div className="dashboard-actions">
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setEditingSubscription(null);
+                setShowForm(true);
+              }}
+            >
+              + Add Subscription
+            </button>
+          </div>
         </div>
 
         {error && <div className="error-message">{error}</div>}
